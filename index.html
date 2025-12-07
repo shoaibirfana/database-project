@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Bank ERD Diagram</title>
+    <script type="module">
+        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'default'
+        });
+    </script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .mermaid {
+            margin-top: 20px;
+            overflow-x: auto;
+        }
+        h1 {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Bank ERD Diagram</h1>
+        <div class="mermaid">
+erDiagram
+    CUSTOMERS ||--o{ ACCOUNTS : "has"
+    CUSTOMERS ||--o{ LOANS : "takes"
+    CUSTOMERS ||--o{ BENEFICIARIES : "adds"
+    
+    ACCOUNTS }o--|| ACCOUNT_TYPES : "is of type"
+    ACCOUNTS }o--|| BRANCHES : "belongs to"
+    ACCOUNTS ||--o{ TRANSACTIONS : "records"
+    ACCOUNTS ||--o{ CARDS : "issues"
+    ACCOUNTS ||--o{ TRANSFERS : "from/to"
+    ACCOUNTS ||--o{ LOANS : "linked to"
+    
+    TRANSACTIONS }o--|| TRANSACTION_TYPES : "categorized as"
+    
+    LOANS ||--o{ LOAN_PAYMENTS : "has"
+    
+    CUSTOMERS {
+        NUMBER customer_id PK
+        VARCHAR2 first_name
+        VARCHAR2 last_name
+        VARCHAR2 email UK
+        VARCHAR2 phone
+        DATE date_of_birth
+        VARCHAR2 address
+        VARCHAR2 city
+        VARCHAR2 national_id UK
+        VARCHAR2 customer_type
+        DATE registration_date
+        VARCHAR2 status
+    }
+    
+    ACCOUNT_TYPES {
+        NUMBER account_type_id PK
+        VARCHAR2 type_name UK
+        VARCHAR2 description
+        NUMBER minimum_balance
+        NUMBER interest_rate
+        NUMBER monthly_fee
+        NUMBER withdrawal_limit
+        CHAR overdraft_allowed
+        VARCHAR2 status
+    }
+    
+    ACCOUNTS {
+        NUMBER account_id PK
+        VARCHAR2 account_number UK
+        NUMBER customer_id FK
+        NUMBER account_type_id FK
+        NUMBER branch_id FK
+        NUMBER balance
+        VARCHAR2 currency
+        DATE opening_date
+        DATE closing_date
+        VARCHAR2 status
+        DATE last_transaction_date
+    }
+    
+    BRANCHES {
+        NUMBER branch_id PK
+        VARCHAR2 branch_code UK
+        VARCHAR2 branch_name
+        VARCHAR2 address
+        VARCHAR2 city
+        VARCHAR2 phone
+        VARCHAR2 email
+        VARCHAR2 manager_name
+        DATE opening_date
+        VARCHAR2 status
+    }
+    
+    TRANSACTION_TYPES {
+        NUMBER transaction_type_id PK
+        VARCHAR2 type_code UK
+        VARCHAR2 type_name
+        VARCHAR2 description
+        VARCHAR2 affects_balance
+    }
+    
+    TRANSACTIONS {
+        NUMBER transaction_id PK
+        VARCHAR2 transaction_number UK
+        NUMBER account_id FK
+        NUMBER transaction_type_id FK
+        DATE transaction_date
+        NUMBER amount
+        NUMBER balance_after
+        VARCHAR2 description
+        VARCHAR2 reference_number
+        VARCHAR2 status
+    }
+    
+    TRANSFERS {
+        NUMBER transfer_id PK
+        VARCHAR2 transfer_number UK
+        NUMBER from_account_id FK
+        NUMBER to_account_id FK
+        NUMBER amount
+        DATE transfer_date
+        VARCHAR2 description
+        VARCHAR2 status
+    }
+    
+    LOANS {
+        NUMBER loan_id PK
+        VARCHAR2 loan_number UK
+        NUMBER customer_id FK
+        NUMBER account_id FK
+        VARCHAR2 loan_type
+        NUMBER principal_amount
+        NUMBER interest_rate
+        NUMBER tenure_months
+        NUMBER monthly_payment
+        NUMBER outstanding_balance
+        DATE disbursement_date
+        DATE maturity_date
+        VARCHAR2 status
+    }
+    
+    LOAN_PAYMENTS {
+        NUMBER payment_id PK
+        NUMBER loan_id FK
+        DATE payment_date
+        NUMBER payment_amount
+        NUMBER principal_paid
+        NUMBER interest_paid
+        NUMBER balance_after
+        VARCHAR2 payment_method
+        VARCHAR2 status
+    }
+    
+    CARDS {
+        NUMBER card_id PK
+        VARCHAR2 card_number UK
+        NUMBER account_id FK
+        VARCHAR2 card_type
+        VARCHAR2 card_holder_name
+        DATE issue_date
+        DATE expiry_date
+        VARCHAR2 cvv
+        VARCHAR2 pin_hash
+        NUMBER daily_limit
+        VARCHAR2 status
+    }
+    
+    BENEFICIARIES {
+        NUMBER beneficiary_id PK
+        NUMBER customer_id FK
+        VARCHAR2 beneficiary_name
+        VARCHAR2 account_number
+        VARCHAR2 bank_name
+        VARCHAR2 branch_name
+        VARCHAR2 relationship
+        VARCHAR2 status
+        DATE added_date
+    }
+    
+    AUDIT_LOG {
+        NUMBER audit_id PK
+        VARCHAR2 table_name
+        VARCHAR2 operation
+        NUMBER record_id
+        CLOB old_values
+        CLOB new_values
+        VARCHAR2 changed_by
+        DATE changed_date
+        VARCHAR2 ip_address
+    }
+        </div>
+    </div>
+</body>
+</html>
